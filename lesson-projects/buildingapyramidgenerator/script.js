@@ -54,11 +54,15 @@ console.log(sum)
 
 const call = padRow();
 console.log(call); */
+let inverted = true;
 
-//TODO: use a different kind of loop
-/*for (let i = 1; i < count; i ++) {
-    rows.push(padRow(i, count))
-}*/
+for (let i = 1; i < count; i ++) {
+    if (inverted) {
+        rows.unshift(padRow(i, count));
+    } else {
+        rows.push(padRow(i, count));
+    }
+}
 
 /*while (row.length <= count) {
   rows.push(padRow(rows.length + 1, count));
@@ -69,12 +73,14 @@ console.log(call); */
   rows.push(padRow(i, count));
 }*/
 
-const numbers = [1, 2, 3];
+/*const numbers = [1, 2, 3];
 const shifted = numbers.shift();
 console.log(shifted);
 const unshifted = numbers.unshift(5);
 console.log(unshifted);
-console.log(numbers);
+console.log(numbers);*/
+
+
 
 let  result = ""
 

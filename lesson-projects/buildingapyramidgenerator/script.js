@@ -61,15 +61,10 @@ console.log(call); */
 }*/
 
 
-let continueLoop = false;
-let done = 0;
 
-while (done !== count) {
-  done++;
-  rows.push(padRow(done, count));
-  if (done === count) {
-    continueLoop = false;
-  } 
+while (row.length <= count) {
+  rows.push(padRow(rows.length + 1, count));
+
 }
 
 let  result = ""

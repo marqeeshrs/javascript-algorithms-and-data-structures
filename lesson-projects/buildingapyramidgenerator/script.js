@@ -55,10 +55,22 @@ console.log(sum)
 const call = padRow();
 console.log(call); */
 
-for (let i = 0; i < count; i = i + 1) {
-    rows.push(character.repeat(i + 1))
-}
+//TODO: use a different kind of loop
+/*for (let i = 1; i < count; i ++) {
+    rows.push(padRow(i, count))
+}*/
 
+
+let continueLoop = false;
+let done = 0;
+
+while (done !== count) {
+  done++;
+  rows.push(padRow(done, count));
+  if (done === count) {
+    continueLoop = false;
+  } 
+}
 
 let  result = ""
 

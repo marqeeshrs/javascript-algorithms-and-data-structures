@@ -60,12 +60,21 @@ console.log(call); */
     rows.push(padRow(i, count))
 }*/
 
-
-
-while (row.length <= count) {
+/*while (row.length <= count) {
   rows.push(padRow(rows.length + 1, count));
 
-}
+}*/
+
+/*for (let i = count; i > 0; i--) {
+  rows.push(padRow(i, count));
+}*/
+
+const numbers = [1, 2, 3];
+const shifted = numbers.shift();
+console.log(shifted);
+const unshifted = numbers.unshift(5);
+console.log(unshifted);
+console.log(numbers);
 
 let  result = ""
 

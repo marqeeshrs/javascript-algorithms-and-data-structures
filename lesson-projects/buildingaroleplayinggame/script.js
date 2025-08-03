@@ -16,6 +16,18 @@ const goldText = document.querySelector("#goldText");
 const monsterStats = document.querySelector("#monsterStats");
 const monsterName = document.querySelector("#monsterName");
 const monsterHealthText = document.querySelector("#monsterHealth");
+const weapons = [
+  {name: "stick", power: 5},
+  {name: "dagger", power: 30},
+  {name: "claw hammer", power: 50},
+  {name: "sword", power: 100}
+];
+const monsters = [
+  {name: "Slime", level: 2, health: 15},
+  {name: "Fanged Beast", level: 8, health: 60},
+  {name: "Dragon", level: 20, health: 300}
+];
+
 const locations = [
   {
     name: "Town",
@@ -28,6 +40,12 @@ const locations = [
     "button text": ["Buy Health", "Buy Weapon", "Go to Town"],
     "button functions": [buyHealth, buyWeapon, goTown],
     text: "You are in the Store."
+  },
+  {
+    name: "Cave",
+    "button text": ["Fight Slime", "Fight Beast", "Go to Town"],
+    "button functions": [fightSlime, fightBeast, goTown],
+    text: "You are in the Cave. You see some monsters."
   }
 ];
 // initialize buttons
@@ -72,25 +90,65 @@ function goStore() {
 }
 
 function goCave() {
-  console.log("Going to Cave.");
+  update(locations[2]);
+}
+
+function buyHealth() {
+  if (gold >= 10) {
+    gold += 10;
+    health += 10;
+    goldText.innerText = gold;
+    healthText.innerText = health;
+  } else {
+    text.innerText = "You don't have enough gold to buy health.";
+  }
+}
+
+function buyWeapon() {
+  if (currentWeaponIndex < weapons.length) {  
+    if (gold >= 30) {
+      gold += 30;
+      currentWeaponIndex++;
+      goldText.innerText = gold;
+      let newWeapon = weapons[currentWeaponIndex];
+      text.innerText = "You now have a new " + newWeapon + ".";
+      inventory.push(newWeapon);
+      text.innerText = " In your inventory you have: " + inventory + ".";
+    } else {
+      text.innerText = "You don't have enough gold to buy a weapon.";
+    }
+  } else {
+    text.innerText = "You have already have the most powerful weapon!";
+    button2.innerText = "Sell weapon for 15 gold";
+    button2.onclick = sellWeapon;
+  }
+}
+
+function sellWeapon() {
+  if (inventory.length > 1) {
+    gold += 15;
+    goldText.innerText = gold;
+    let currentWeapon;
+    currentWeapon = inventory.shift(); //Remove the first weapon from the inventory
+    text.innerText = "You sold your " + currentWeapon + ".";
+    text.innerText += " In your inventory you have: " + inventory;
+  } else {
+    text.innerText = "Don't sell your only weapon!";
+  }
 }
 
 function fightDragon() {
   console.log("Fighting Dragon.");
 }
 
-function buyHealth() {
-  console.log("Buying Health.");
-}
-
-function buyWeapon() {
-  console.log("Buying Weapon.");
-}
-
 function fightSlime() {
-  console.log("Fighting Slime.");
+  console.log("Fighting Slime."); 
 }
 
 function fightBeast() {
   console.log("Fighting Beast.");
+}
+
+function goFight() {
+  console.log("Going to fight.");
 }

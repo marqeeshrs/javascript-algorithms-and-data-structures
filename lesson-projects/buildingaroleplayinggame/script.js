@@ -16,19 +16,81 @@ const goldText = document.querySelector("#goldText");
 const monsterStats = document.querySelector("#monsterStats");
 const monsterName = document.querySelector("#monsterName");
 const monsterHealthText = document.querySelector("#monsterHealth");
+const locations = [
+  {
+    name: "Town",
+    "button text": ["Go to Store", "Go to Cave", "Fight Dragon"],
+    "button functions": [goStore, goCave, fightDragon],
+    text: "You are in the Town Square. You see a sign that says \"Store\"."
+  },
+  {
+    name: "Store",
+    "button text": ["Buy Health", "Buy Weapon", "Go to Town"],
+    "button functions": [buyHealth, buyWeapon, goTown],
+    text: "You are in the Store."
+  }
+];
 // initialize buttons
 button1.onclick = goStore;
 button2.onclick = goCave;
 button3.onclick = fightDragon;
 
+function update(location) {
+  button1.innerText = location["button text"][0];
+  button2.innerText = location["button text"][1];
+  button3.innerText = location["button text"][2];
+  button1.onclick = location["button functions"][0];
+  button2.onclick = location["button functions"][1];
+  button3.onclick = location["button functions"][2];
+  text.innerText = location.text;
+}
+
+function goTown() {
+  update(locations[0]);
+  /*
+  button1.innerText= "Go to Store";
+  button2.innerText= "Go to Cave";
+  button3.innerText= "Fight Dragon";
+  button1.onclick = goStore;
+  button2.onclick = goCave;
+  button3.onclick = fightDragon;
+  text.innerText = "You are in the Town Square. You see a sign that says \"Store\".";
+  */
+}
+
 function goStore() {
-  console.log("Going to store.");
+  update(locations[1]);
+  /*
+  button1.innerText = "Buy Health";
+  button2.innerText = "Buy Weapon";
+  button3.innerText = "Go to Town";
+  button1.onclick = buyHealth;
+  button2.onclick = buyWeapon;
+  button3.onclick = goTown;
+  text.innerText = "You enter the Store.";
+  */
 }
 
 function goCave() {
-  console.log("Going to cave.");
+  console.log("Going to Cave.");
 }
 
 function fightDragon() {
-  console.log("Fighting dragon.");
+  console.log("Fighting Dragon.");
+}
+
+function buyHealth() {
+  console.log("Buying Health.");
+}
+
+function buyWeapon() {
+  console.log("Buying Weapon.");
+}
+
+function fightSlime() {
+  console.log("Fighting Slime.");
+}
+
+function fightBeast() {
+  console.log("Fighting Beast.");
 }

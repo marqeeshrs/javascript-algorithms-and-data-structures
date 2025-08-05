@@ -52,6 +52,12 @@ const locations = [
     "button text": ["Attack", "Dodge", "Run"],
     "button functions": [attack, dodge, goTown],
     text: "You are fighting a monster."
+  },
+  {
+    name: "kill monster",
+    "button text": ["Go to Town", "Go to Town", "Go to Town"],
+    "button functions": [goTown, goTown, goTown],
+    text: "The monster screams in pain, falling to the ground. You gain experience points and find gold."
   }
 ];
 // initialize buttons
@@ -60,6 +66,7 @@ button2.onclick = goCave;
 button3.onclick = fightDragon;
 
 function update(location) {
+  monsterStats.style.display = 'none';
   button1.innerText = location["button text"][0];
   button2.innerText = location["button text"][1];
   button3.innerText = location["button text"][2];
@@ -167,8 +174,24 @@ function goFight() {
   update(locations[3]);
   monsterHealth = monsters[fighting].health;
   monsterStats.style.display ='block';
+  monsterName.innerText = monsters{fighting}.name;
+  monsterHealthText.innerText = monsterHealth;
 }
 
-function attack() {}
+function attack() {
+  text.innerText = "The " + monsters[fighting].name + " attacks.";
+  text.innerText += " You attack it with your " + weapons[currentWeaponIndex].name + ".";
+  health -= monsters[fighting].level;
+  //randomizing monster health from 1 to player xp level
+  monsterHealth -= weapons[currentWeaponIndex].power + Math.floor(Math.random() * xp) + 1;
+  healthText.innerText = health;
+  monsterHealthText.innerText = monsterHealth;
+  if (health <= 0) {
+    lose();
+  } else if (monsterHealth <= 0) {
+    defeatMonster();
+  }
+
+}
 
 function dodge() {}

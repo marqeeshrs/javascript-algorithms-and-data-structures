@@ -33,17 +33,17 @@ const locations = [
     name: "Town",
     "button text": ["Go to Store", "Go to Cave", "Fight Dragon"],
     "button functions": [goStore, goCave, fightDragon],
-    text: "You are in the Town Square. You see a sign that says \"Store\"."
+    text: "You are in the Town, standing in the Town's Square. You see a sign that says \"Store, this way\" and \"Cave, that way\"."
   },
   {
     name: "Store",
-    "button text": ["Buy Health", "Buy Weapon", "Go to Town"],
+    "button text": ["Buy 10 Health (10 Gold)", "Buy Weapon (30 Gold)", "Go to Town Square"],
     "button functions": [buyHealth, buyWeapon, goTown],
     text: "You are in the Store."
   },
   {
     name: "Cave",
-    "button text": ["Fight Slime", "Fight Beast", "Go to Town"],
+    "button text": ["Fight Slime", "Fight Fanged Beast", "Go to Town"],
     "button functions": [fightSlime, fightBeast, goTown],
     text: "You are in the Cave. You see some monsters."
   }, 
@@ -51,13 +51,31 @@ const locations = [
     name: "fight",
     "button text": ["Attack", "Dodge", "Run"],
     "button functions": [attack, dodge, goTown],
-    text: "You are fighting a monster."
+    text: "You are fighting a " + monsters[fighting].name + "."
   },
   {
     name: "kill monster",
     "button text": ["Go to Town", "Go to Town", "Go to Town"],
-    "button functions": [goTown, goTown, goTown],
+    "button functions": [goTown, goTown, easterEgg],
     text: "The monster screams in pain, falling to the ground. You gain experience points and find gold."
+  },
+  {
+    name: "lose",
+    "button text": ["REPLAY?", "REPLAY?", "REPLAY?"],
+    "button functions": [restart, restart, restart],
+    text: "You have been defeated. You lose all your gold and experience points."
+  },
+  {
+    name: "win",
+    "button text": ["REPLAY?", "REPLAY?", "REPLAY?"],
+    "button functions": [restart, restart, restart],
+    text: "Congratulations! You have defeated the Dragon. YOU WIN!"
+  },
+  {
+    name: "easter egg",
+    "button text": ["2", "8", "Go to Town?"],
+    "button functions": [pickTwo, pickEight, goTown],
+    text: "You found the easter egg! You can pick a number between 1 and 10. If the number you choose matches one of the random numbers, you win a prize!"
   }
 ];
 // initialize buttons
@@ -108,19 +126,19 @@ function goCave() {
 
 function buyHealth() {
   if (gold >= 10) {
-    gold += 10;
+    gold -= 10;
     health += 10;
     goldText.innerText = gold;
     healthText.innerText = health;
   } else {
-    text.innerText = "You don't have enough gold to buy health.";
+    text.innerText = "You don't have enough gold to buy health. Merchant says: \"Come back when you have more gold!\"";
   }
 }
 
 function buyWeapon() {
   if (currentWeaponIndex < weapons.length) {  
     if (gold >= 30) {
-      gold += 30;
+      gold -= 30;
       currentWeaponIndex++;
       goldText.innerText = gold;
       let newWeapon = weapons[currentWeaponIndex];
@@ -151,30 +169,26 @@ function sellWeapon() {
 }
 
 function fightSlime() {
-  console.log("Fighting Slime."); 
   fighting = 0;
   goFight();
 
 }
 
 function fightBeast() {
-  console.log("Fighting Beast.");
   fighting = 1;
   goFight();
 }
 
 function fightDragon() {
-  console.log("Fighting Dragon.");
   fighting = 2;
   goFight();
 }
 
 function goFight() {
-  console.log("Going to fight.");
   update(locations[3]);
   monsterHealth = monsters[fighting].health;
   monsterStats.style.display ='block';
-  monsterName.innerText = monsters{fighting}.name;
+  monsterName.innerText = monsters[fighting].name;
   monsterHealthText.innerText = monsterHealth;
 }
 

@@ -1,6 +1,6 @@
 let xp = 0;
 let health = 100;
-let gold = 50;
+let gold = 0;
 let currentWeaponIndex = 0;
 let fighting;
 let monsterHealth;
@@ -52,7 +52,7 @@ const locations = [
     name: "fight",
     "button text": ["Attack", "Dodge", "Run"],
     "button functions": [attack, dodge, goTown],
-    text: "You are fighting a " + monsters[fighting].name + "."
+    text: "You are fighting a"
   },
   {
     name: "kill monster",
@@ -64,7 +64,7 @@ const locations = [
     name: "lose",
     "button text": ["REPLAY?", "REPLAY?", "REPLAY?"],
     "button functions": [restart, restart, restart],
-    text: "You have been defeated. You lose all your gold and experience points."
+    text: "You have been defeated. You lose all your character stats and new weapons."
   },
   {
     name: "win",
@@ -79,6 +79,10 @@ const locations = [
     text: "You fall through a sink hole! You slide down a dirt tunnel and hard-land into a granite seat. Across from you sits a masked entity. It says, \"Pick a number between 0 and 10. If you pick the right number, you win a prize!\""
   }
 ];
+
+
+let currentWeapon = weapons[currentWeaponIndex];
+let newWeapon;
 // initialize buttons
 button1.onclick = goStore;
 button2.onclick = goCave;
@@ -137,17 +141,21 @@ function buyHealth() {
 }
 
 function buyWeapon() {
-  if (currentWeaponIndex < weapons.length) {  
+  if (currentWeaponIndex < weapons.length - 1) {
     if (gold >= 30) {
       gold -= 30;
       currentWeaponIndex++;
       goldText.innerText = gold;
-      let newWeapon = weapons[currentWeaponIndex];
-      text.innerText = "You now have a new " + newWeapon + ".";
+      newWeapon = weapons[currentWeaponIndex].name;
       inventory.push(newWeapon);
-      text.innerText = " In your inventory you have: " + inventory + ".";
+      text.innerText = 
+        "You now have a new " + newWeapon + "." +
+        " In your inventory you have: " + inventory.join(", ") + ".";
     } else {
-      text.innerText = "You don't have enough gold to buy a weapon. Merchant says: \"I used to be like you, once, before I took an arrow in the knee... Err.. Come back when you have more gold!\"";
+      text.innerText = 
+        "You don't have enough gold to buy a weapon. Merchant says: " +
+        "\"I used to be like you, once, before I took an arrow in the knee... " +
+        "Err.. Come back when you have more gold!\"";
     }
   } else {
     text.innerText = "You have already have the most powerful weapon!";
@@ -162,10 +170,13 @@ function sellWeapon() {
     goldText.innerText = gold;
     let currentWeapon;
     currentWeapon = inventory.shift(); //Remove the first weapon from the inventory
-    text.innerText = "You sold your " + currentWeapon + ".";
-    text.innerText += " In your inventory you have: " + inventory;
+    text.innerText =
+      "You sold your " + currentWeapon + "." +
+      " In your inventory you have: " + inventory.join(", ") + ".";
+    update(locations[1]);
   } else {
-    text.innerText = "Merchant says: \"Don't sell your only weapon, you gobswallow!\"";
+    text.innerText = "Merchant says: \"Don't sell your only weapon, " + 
+    "you gobswallow!\"";
   }
 }
 
@@ -187,6 +198,7 @@ function fightDragon() {
 
 function goFight() {
   update(locations[3]);
+  text.innerText += " " + monsters[fighting].name + ".";
   monsterHealth = monsters[fighting].health;
   monsterStats.style.display ='block';
   monsterName.innerText = monsters[fighting].name;
@@ -195,16 +207,16 @@ function goFight() {
 
 function attack() {
   text.innerText = "The " + monsters[fighting].name + " attacks.";
-  text.innerText += " You attack it with your " + weapons[currentWeaponIndex].name + ".";
-  health -= getMonsterAttackValue(monsters[fighting].level);
-  if (isMonsterHit()) {
+    if (isMonsterHit()) {
     //randomizing monster health from 1 to player xp level
     monsterHealth -= weapons[currentWeaponIndex].power + Math.floor(Math.random() * xp) + 1;
+    text.innerText += " You attack it with your " + weapons[currentWeaponIndex].name + ".";
+    health -= getMonsterAttackValue(monsters[fighting].level);
   } else {
-    counterAttack = Math.floor(Math.random(0, 2) * 3) - 2; // Randomly decide amount the monster counters the player
+    counterAttack = Math.floor(Math.random() * 3) + 2; // Randomly decide amount the monster counters the player
     monsterHealth -= 0; // No damage if the attack misses
     health -= counterAttack; // Player takes counterAttack damage if the attack misses
-    text.innerText += " You missed! Monster counters you for " + counterAttack + " damage to your health.";
+    text.innerText += " You missed! The monster counters you for +" + counterAttack + " damage to your health.";
   }
   healthText.innerText = health;
   monsterHealthText.innerText = monsterHealth;
@@ -243,18 +255,29 @@ function dodge() {
     health -= Math.ceil(getMonsterAttackValue(monsters[fighting].level) * 0.2135);
     healthText.innerText = health;
   }
+  if (health <= 0) {
+    lose();
+  }
 }
 
 function defeatMonster() {
-  gold += Math.floor(monsters[fighting].level * 6.7);
-  xp += monsters[fighting].level;
+  const goldGain = Math.floor(monsters[fighting].level * 6.7);
+  const xpGain = monsters[fighting].level;
+  gold += goldGain;
+  xp += xpGain;
   goldText.innerText = gold;
   xpText.innerText = xp;
   update(locations[4]);
-  text.innerText = "You defeated the " + monsters[fighting].name + ". You gain " + gold + " gold and " + xp + " experience points.";
+  text.innerText = 
+    "You defeated the " + monsters[fighting].name + "." +
+    " You gain " + goldGain + " gold and " + xpGain + " experience points.";
 }
 
 function lose() {
+  xp = 0;
+  gold = 0;
+  xpText.innerText = xp;
+  goldText.innerText = gold;
   update(locations[5]);
 }
 
@@ -265,9 +288,10 @@ function winGame() {
 function restart() {
   xp = 0;
   health = 100;
-  gold = 50;
+  gold = 0;
   currentWeaponIndex = 0;
   inventory = ["stick"];
+  currentWeapon = weapons[currentWeaponIndex].name;
   goldText.innerText = gold;
   healthText.innerText = health;
   xpText.innerText = xp;
@@ -296,11 +320,36 @@ function pick(guess) {
     text.innerText += numbers[i] + "\n";
   }
   if (numbers.includes(guess)) {
-    text.innerText += "Congratulations! You win a prize!";
+    text.innerText += "The masked entity says \"Congratulations! You win a prize!\"";
+    text.innerText += " \"Now, get out of here, ya scamp.\"";
+    text.innerText += " You gain 20 gold.";
     gold += 20; // Reward for winning
     goldText.innerText = gold;
   } else {
-    text.innerText += "Sorry, you didn't win this time. Now, GET OUT OF HERE!";
+    health -= 4; // Penalty for losing
+    healthText.innerText = health;
+    text.innerText += "The masked entity says \"Sorry, you didn't win this time. Now, GET OUT OF HERE!\"";
+    text.innerText += " It casts a painful spell returning you to the Town Square. You lose 4 health.";
   }
-  goTown();
+  if (health <= 0) {
+    lose();
+  } else {
+    goTown();
+  }
 }
+/*
+* This is a simple RPG game where the player can explore, fight monsters, and buy items.
+* The player can go to the store to buy health or weapons, fight monsters in the cave
+* or fight a dragon, and manage their inventory.
+* The game includes a simple combat system, health management, and an inventory system.
+* The player can also encounter an easter egg where they can pick a number to win a prize.
+* The game ends when the player defeats the dragon or loses all health.
+* The player can restart the game after losing or winning.
+* The game is designed to be simple and fun, with a focus on exploration and combat.
+* The player can also sell their weapons to the merchant for gold.
+* The game is built using HTML, CSS, and JavaScript, and can be easily modified to add more features or change the gameplay.
+* The game is a fun way to practice JavaScript programming and learn about game development concepts.
+* The game can be played in a web browser and is responsive to different screen sizes.
+* The game can be extended with more features, such as more monsters, items, and locations.
+* The game can also be improved with better graphics and sound effects.
+*/

@@ -76,7 +76,7 @@ const locations = [
     name: "easter egg",
     "button text": ["2", "8", "Go to Town?"],
     "button functions": [pickTwo, pickEight, goTown],
-    text: "You found the easter egg! You can pick a number between 1 and 10. If the number you choose matches one of the random numbers, you win a prize!"
+    text: "You fall through a sink hole! You slide down a dirt tunnel and hard-land into a granite seat. Across from you sits a masked entity. It says, \"Pick a number between 0 and 10. If you pick the right number, you win a prize!\""
   }
 ];
 // initialize buttons
@@ -198,12 +198,12 @@ function attack() {
   text.innerText += " You attack it with your " + weapons[currentWeaponIndex].name + ".";
   health -= getMonsterAttackValue(monsters[fighting].level);
   if (isMonsterHit()) {
-  //randomizing monster health from 1 to player xp level
-  monsterHealth -= weapons[currentWeaponIndex].power + Math.floor(Math.random() * xp) + 1;
+    //randomizing monster health from 1 to player xp level
+    monsterHealth -= weapons[currentWeaponIndex].power + Math.floor(Math.random() * xp) + 1;
   } else {
     counterAttack = Math.floor(Math.random(0, 2) * 3) - 2; // Randomly decide amount the monster counters the player
     monsterHealth -= 0; // No damage if the attack misses
-    health -= 5; // Player takes 5 damage if the attack misses
+    health -= counterAttack; // Player takes counterAttack damage if the attack misses
     text.innerText += " You missed! Monster counters you for " + counterAttack + " damage to your health.";
   }
   healthText.innerText = health;
@@ -211,9 +211,96 @@ function attack() {
   if (health <= 0) {
     lose();
   } else if (monsterHealth <= 0) {
-    defeatMonster();
+    if (fighting === 2) {
+      winGame();
+    } else {
+      defeatMonster();
+    }
   }
-
+  if (Math.random() <= .1 && inventory.length !== 1) {
+    text.innerText += " Your " + inventory.pop() + " broke!";
+    currentWeaponIndex--;
+  }
 }
 
-function dodge() {}
+function getMonsterAttackValue(level) {
+  const hit = (level * 5) - (Math.floor(Math.random() * xp));
+  return hit > 0 ? hit : 0; // Ensure the attack value is not negative
+}
+
+function isMonsterHit() {
+  return Math.random() > .2 || health < 20; // 80% chance to hit, or always hit if health is below 20
+}
+
+function dodge() {
+  text.innerText = "You attempt to dodge the attack!";
+  if (Math.random() < 0.5) {  // 50% chance to dodge
+    text.innerText += " You dodged the " + monsters[fighting].name + " attack!";
+    health += 2; // Gain a small health boost for dodging
+    healthText.innerText = health;
+  } else {
+    text.innerText += " You failed to dodge the " + monsters[fighting].name + " attack!";
+    health -= Math.ceil(getMonsterAttackValue(monsters[fighting].level) * 0.2135);
+    healthText.innerText = health;
+  }
+}
+
+function defeatMonster() {
+  gold += Math.floor(monsters[fighting].level * 6.7);
+  xp += monsters[fighting].level;
+  goldText.innerText = gold;
+  xpText.innerText = xp;
+  update(locations[4]);
+  text.innerText = "You defeated the " + monsters[fighting].name + ". You gain " + gold + " gold and " + xp + " experience points.";
+}
+
+function lose() {
+  update(locations[5]);
+}
+
+function winGame() {
+  update(locations[6]);
+}
+
+function restart() {
+  xp = 0;
+  health = 100;
+  gold = 50;
+  currentWeaponIndex = 0;
+  inventory = ["stick"];
+  goldText.innerText = gold;
+  healthText.innerText = health;
+  xpText.innerText = xp;
+  goTown();
+}
+
+function easterEgg() {
+  update(locations[7]);
+}
+
+function pickTwo() {
+  pick(2);
+}
+
+function pickEight() {
+  pick(8);
+}
+
+function pick(guess) {
+  const numbers = [];
+  while (numbers.length < 10) {
+    numbers.push(Math.floor(Math.random() * 11));
+  }
+  text.innerText = "You picked " + guess + ". Here are the random numbers:\n";
+  for (let i = 0; i < 10; i++) {
+    text.innerText += numbers[i] + "\n";
+  }
+  if (numbers.includes(guess)) {
+    text.innerText += "Congratulations! You win a prize!";
+    gold += 20; // Reward for winning
+    goldText.innerText = gold;
+  } else {
+    text.innerText += "Sorry, you didn't win this time. Now, GET OUT OF HERE!";
+  }
+  goTown();
+}

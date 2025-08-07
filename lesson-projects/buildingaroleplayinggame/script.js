@@ -5,6 +5,7 @@ let currentWeaponIndex = 0;
 let fighting;
 let monsterHealth;
 let inventory = ["stick"];
+let counterAttack = 0;
 
 const button1 = document.querySelector("#button1");
 const button2 = document.querySelector("#button2");
@@ -146,7 +147,7 @@ function buyWeapon() {
       inventory.push(newWeapon);
       text.innerText = " In your inventory you have: " + inventory + ".";
     } else {
-      text.innerText = "You don't have enough gold to buy a weapon.";
+      text.innerText = "You don't have enough gold to buy a weapon. Merchant says: \"I used to be like you, once, before I took an arrow in the knee... Err.. Come back when you have more gold!\"";
     }
   } else {
     text.innerText = "You have already have the most powerful weapon!";
@@ -164,7 +165,7 @@ function sellWeapon() {
     text.innerText = "You sold your " + currentWeapon + ".";
     text.innerText += " In your inventory you have: " + inventory;
   } else {
-    text.innerText = "Don't sell your only weapon!";
+    text.innerText = "Merchant says: \"Don't sell your only weapon, you gobswallow!\"";
   }
 }
 
@@ -195,9 +196,16 @@ function goFight() {
 function attack() {
   text.innerText = "The " + monsters[fighting].name + " attacks.";
   text.innerText += " You attack it with your " + weapons[currentWeaponIndex].name + ".";
-  health -= monsters[fighting].level;
+  health -= getMonsterAttackValue(monsters[fighting].level);
+  if (isMonsterHit()) {
   //randomizing monster health from 1 to player xp level
   monsterHealth -= weapons[currentWeaponIndex].power + Math.floor(Math.random() * xp) + 1;
+  } else {
+    counterAttack = Math.floor(Math.random(0, 2) * 3) - 2; // Randomly decide amount the monster counters the player
+    monsterHealth -= 0; // No damage if the attack misses
+    health -= 5; // Player takes 5 damage if the attack misses
+    text.innerText += " You missed! Monster counters you for " + counterAttack + " damage to your health.";
+  }
   healthText.innerText = health;
   monsterHealthText.innerText = monsterHealth;
   if (health <= 0) {

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Palindrome Checker</title>
+        <link rel="stylesheet" href="./styles.css">
+    </head>
+    <body>
+        <main class="card">
+            <h1>Palindrome Checker</h1>
+            <p class="hint">Enter a word or phrase.</p>
+
+            <div class="row">
+                <label class="visually-hidden" for="text-input">Text to check</label>
+                <input id="text-input" autocomplete="off" placeholder="Try: A man, a plan, a canal. Panama" />
+                <button id="check-btn" type="button">Check</button>
+            </div>
+
+            <p id="result" aria-live="polite"></p>
+        </main>
+
+    <script src="./script.js"></script>
+    </body>
+</html>
